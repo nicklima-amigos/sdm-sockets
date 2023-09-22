@@ -38,8 +38,6 @@ class PresenceClient:
             response_message = response.decode()
             print(response_message)
 
-        self.client.close()
-
 
 def is_professor():
     args = sys.argv[1:]
@@ -50,5 +48,7 @@ if __name__ == "__main__":
     client = socket(SOCK_DGRAM, AF_INET)
     if is_professor():
         PresenceClient(client, ClientTypes.PROFESSOR).run()
-        quit()
-    PresenceClient(client).run()
+    else:
+        PresenceClient(client).run()
+    print("Cliente fechando")
+    client.close()
