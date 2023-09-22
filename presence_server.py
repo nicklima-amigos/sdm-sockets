@@ -22,8 +22,8 @@ class PresenceServer:
             message = self.get_message(str_data)
             if self.is_professor(str_data):
                 self.handle_professor_message(message, address)
-                continue
-            self.handle_student_message(message, address)
+            else:
+                self.handle_student_message(message, address)
 
     def is_professor(self, data: str):
         return data[:9] == ClientTypes.PROFESSOR.value
