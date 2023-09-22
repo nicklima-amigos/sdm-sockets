@@ -40,13 +40,13 @@ class PresenceClient:
         self.client.close()
 
 
-def is_professor():
+def has_professor_flag():
     args = sys.argv[1:]
     return len(args) > 0 and (args[0] == "-p" or args[0] == "--professor")
 
 
 if __name__ == "__main__":
-    if is_professor():
+    if has_professor_flag():
         PresenceClient(user=ClientTypes.PROFESSOR).run()
         quit()
     PresenceClient().run()
