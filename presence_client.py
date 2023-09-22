@@ -13,6 +13,7 @@ class ClientTypes(Enum):
 class PresenceClient:
     def __init__(
         self,
+        client: socket,
         user: ClientTypes = ClientTypes.STUDENT,
         host: str = "127.0.0.1",
         port: int = 4000,
@@ -20,7 +21,7 @@ class PresenceClient:
         self.host = host
         self.port = port
         self.user = user
-        self.client = socket(SOCK_DGRAM, AF_INET)
+        self.client = client
 
     def run(self):
         message: str = ""
@@ -46,7 +47,8 @@ def is_professor():
 
 
 if __name__ == "__main__":
+    client = socket(SOCK_DGRAM, AF_INET)
     if is_professor():
-        PresenceClient(user=ClientTypes.PROFESSOR).run()
+        PresenceClient(client, ClientTypes.PROFESSOR).run()
         quit()
-    PresenceClient().run()
+    PresenceClient(client).run()

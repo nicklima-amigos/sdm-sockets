@@ -3,10 +3,10 @@ from presence_client import ClientTypes
 
 
 class PresenceServer:
-    def __init__(self, host: str = "127.0.0.1", port: int = 4000):
+    def __init__(self, server: socket, host: str = "127.0.0.1", port: int = 4000):
         self.host = host
         self.port = port
-        self.server = socket(SOCK_DGRAM, AF_INET)
+        self.server = server
         self.server.bind((self.host, self.port))
         self.presence_list: list[str] = []
         self.class_id = 0
@@ -64,4 +64,5 @@ class PresenceServer:
 
 
 if __name__ == "__main__":
-    PresenceServer().run()
+    server = socket(SOCK_DGRAM, AF_INET)
+    PresenceServer(server).run()
