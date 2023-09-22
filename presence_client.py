@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 from enum import Enum
 from socket import AF_INET, SOCK_DGRAM, socket
@@ -39,9 +40,13 @@ class PresenceClient:
         self.client.close()
 
 
-if __name__ == "__main__":
+def is_professor():
     args = sys.argv[1:]
-    if len(args) > 0 and (args[0] == "-p" or args[0] == "--professor"):
+    return len(args) > 0 and (args[0] == "-p" or args[0] == "--professor")
+
+
+if __name__ == "__main__":
+    if is_professor():
         PresenceClient(user=ClientTypes.PROFESSOR).run()
-    else:
-        PresenceClient().run()
+        quit()
+    PresenceClient().run()
