@@ -16,7 +16,7 @@ class PresenceServer:
         print("Servidor de chamadas rodando na porta", self.port)
         message: str = ""
         str_data: str = ""
-        while 1:
+        while message != "sair":
             data, address = self.server.recvfrom(1024)
             str_data = data.decode()
             message = self.get_message(str_data)
@@ -24,8 +24,6 @@ class PresenceServer:
                 self.handle_professor_message(message, address)
                 continue
             self.handle_student_message(message, address)
-        print("Servidor fechando")
-        self.server.close()
 
     def is_professor(self, data: str):
         return data[:9] == ClientTypes.PROFESSOR.value
@@ -50,6 +48,7 @@ class PresenceServer:
 
     def handle_student_message(self, message, address):
         if message == "fechar":
+            self.server.sendto("".encode(), address)
             return
         if not self.is_open:
             self.server.sendto("A chamada está fechada".encode(), address)
@@ -66,3 +65,5 @@ class PresenceServer:
 if __name__ == "__main__":
     server = socket(SOCK_DGRAM, AF_INET)
     PresenceServer(server).run()
+    print("Servidor fechando")
+    server.close()
