@@ -1,5 +1,6 @@
+import json
 from socket import SOCK_DGRAM, socket, AF_INET
-from presence_client import ClientTypes
+from presence_client import ClientTypes, Message
 
 
 class PresenceServer:
@@ -15,18 +16,17 @@ class PresenceServer:
     def run(self):
         print("Servidor de chamadas rodando na porta", self.port)
         message: str = ""
-        str_data: str = ""
         while message != "sair":
             data, address = self.server.recvfrom(1024)
-            str_data = data.decode()
-            message = self.get_message(str_data)
-            if self.is_professor(str_data):
+            message_data: Message = json.loads(data.decode())
+            message = self.get_message(message_data)
+            if self.is_professor(message_data):
                 self.handle_professor_message(message, address)
             else:
                 self.handle_student_message(message, address)
 
-    def is_professor(self, data: str):
-        return data[:9] == ClientTypes.PROFESSOR.value
+    def is_professor(self, data: Message):
+        return data["user"] == ClientTypes.PROFESSOR.value
 
     def handle_professor_message(self, message, address):
         if message == "fechar":
@@ -58,8 +58,8 @@ class PresenceServer:
             f"Presença do aluno registrada ({message})".encode(), address
         )
 
-    def get_message(self, str_data: str):
-        return str_data.split(": ")[1]
+    def get_message(self, message_data: Message):
+        return message_data["message"]
 
 
 if __name__ == "__main__":

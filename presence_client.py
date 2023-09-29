@@ -1,13 +1,18 @@
-import argparse
-import os
+import json
 import sys
 from enum import Enum
 from socket import AF_INET, SOCK_DGRAM, socket
+from typing import Literal, TypedDict
 
 
 class ClientTypes(Enum):
     PROFESSOR = "professor"
     STUDENT = "aluno"
+
+
+class Message(TypedDict):
+    user: Literal["professor"] | Literal["aluno"]
+    message: str
 
 
 class PresenceClient:
@@ -32,9 +37,10 @@ class PresenceClient:
         while message != "fechar":
             message = input(">>> ")
             self.client.sendto(
-                f"{self.user.value}: {message}".encode(), (self.host, self.port)
+                json.dumps(Message(user=self.user.value, message=message)).encode(),
+                (self.host, self.port),
             )
-            response, addr = self.client.recvfrom(1024)
+            response, _ = self.client.recvfrom(1024)
             response_message = response.decode()
             print(response_message)
 
